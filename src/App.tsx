@@ -1,10 +1,14 @@
-import logo from './assets/logo.png'
+import styles from './App.module.css'
+import { AppErrorBoundary } from './app/AppErrorBoundary'
+import { TodoPage } from './features/todos/pages/TodoPage'
 
 function App() {
   return (
-    <>
-      <img src={logo} alt="Logo" />
-    </>
+    <AppErrorBoundary>
+      <main className={styles.app}>
+        <TodoPage />
+      </main>
+    </AppErrorBoundary>
   )
 }
 

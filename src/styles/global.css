@@ -1,0 +1,36 @@
+:root {
+  color: #0f172a;
+  background:
+    radial-gradient(circle at top, rgba(45, 212, 191, 0.35), transparent 28%),
+    linear-gradient(180deg, #f7fee7 0%, #ecfeff 55%, #f8fafc 100%);
+  font-family:
+    "Space Grotesk",
+    "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+}
+
+button,
+input {
+  font: inherit;
+}
