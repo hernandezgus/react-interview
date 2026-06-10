@@ -25,6 +25,16 @@ export async function deleteTodoList(id: number) {
   await apiClient.delete(`/api/todolists/${id}`)
 }
 
+export async function syncTodos() {
+  const response = await apiClient.post<{
+    success: boolean
+    created: number
+    failed: number
+    message?: string
+  }>('/api/todolists/sync')
+  return response.data
+}
+
 export async function updateTodoItem(
   todoList: TodoList,
   itemId: number,

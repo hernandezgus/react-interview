@@ -1,7 +1,18 @@
-import { Alert, Box, Button, CircularProgress, Container, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Snackbar,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { CreateTodoListForm } from '../components/CreateTodoListForm'
 import { TodoListCard } from '../components/TodoListCard'
 import { useTodoLists } from '../hooks/useTodoLists'
+import { syncTodos } from '../api/todoLists'
 
 type TodoListsPageProps = {
   onLogout: () => void
@@ -17,6 +28,7 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
     formErrorMessage,
     isLoading,
     isSubmitting,
+    loadTodoLists,
     removeTodoItem,
     removeTodoList,
     saveTodoItemName,
@@ -25,6 +37,38 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
     toggleTodoItemCompleted,
     todoLists,
   } = useTodoLists()
+
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [syncResult, setSyncResult] = useState<{
+    success: boolean
+    created: number
+    failed: number
+    message?: string
+  } | null>(null)
+  const [syncError, setSyncError] = useState('')
+
+  const handleSync = async () => {
+    setIsSyncing(true)
+    setSyncError('')
+    setSyncResult(null)
+
+    try {
+      const result = await syncTodos()
+      setSyncResult(result)
+      if (result.success) {
+        await loadTodoLists()
+      }
+    } catch (error) {
+      setSyncError('Sync failed. Please try again.')
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
+  const handleCloseSnackbar = () => {
+    setSyncResult(null)
+    setSyncError('')
+  }
 
   return (
     <Container className="todo-page" maxWidth="lg">
@@ -42,9 +86,14 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
             </Typography>
           </div>
 
-          <Button onClick={onLogout} variant="outlined">
-            Logout
-          </Button>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Button onClick={handleSync} variant="contained" disabled={isSyncing}>
+              {isSyncing ? 'Syncing...' : 'Sync'}
+            </Button>
+            <Button onClick={onLogout} variant="outlined">
+              Logout
+            </Button>
+          </Stack>
         </Box>
 
         <Box className="todo-page__content">
@@ -113,6 +162,27 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
           </Box>
         </Box>
       </Stack>
+
+      {(syncResult || syncError) && (
+        <Snackbar
+          open={Boolean(syncResult) || Boolean(syncError)}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
+          {syncError ? (
+            <Alert severity="error" onClose={handleCloseSnackbar}>
+              {syncError}
+            </Alert>
+          ) : (
+            <Alert
+              severity={syncResult?.success ? 'success' : 'warning'}
+              onClose={handleCloseSnackbar}
+            >
+              Sync completed: {syncResult?.created ?? 0} created, {syncResult?.failed ?? 0} failed
+            </Alert>
+          )}
+        </Snackbar>
+      )}
     </Container>
   )
 }
