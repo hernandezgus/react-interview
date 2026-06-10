@@ -5,8 +5,14 @@ import {
   Button,
   Card,
   CardContent,
-  IconButton,
+  Paper,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from '@mui/material'
@@ -18,58 +24,45 @@ type CreateTodoListFormProps = {
   onSubmit: (payload: CreateTodoListPayload) => Promise<void>
 }
 
-type DraftItem = {
-  id: string
-  name: string
-}
-
-function buildDraftItem(): DraftItem {
-  return {
-    id: crypto.randomUUID(),
-    name: '',
-  }
-}
-
 export function CreateTodoListForm({
   errorMessage,
   isSubmitting,
   onSubmit,
 }: CreateTodoListFormProps) {
   const [name, setName] = useState('')
-  const [items, setItems] = useState<DraftItem[]>([buildDraftItem()])
+  const [currentItem, setCurrentItem] = useState('')
+  const [items, setItems] = useState<string[]>([])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const payload: CreateTodoListPayload = {
       name: name.trim(),
-      items: items
-        .map((item) => item.name.trim())
-        .filter(Boolean)
-        .map((itemName) => ({
-          name: itemName,
-          completed: false,
-        })),
+      items: items.map((itemName) => ({
+        name: itemName,
+        completed: false,
+      })),
     }
 
     await onSubmit(payload)
     setName('')
-    setItems([buildDraftItem()])
+    setCurrentItem('')
+    setItems([])
   }
 
-  function updateItem(id: string, value: string) {
-    setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.id === id ? { ...item, name: value } : item,
-      ),
-    )
+  function addItem() {
+    const itemName = currentItem.trim()
+    if (itemName === '') {
+      return
+    }
+
+    setItems((currentItems) => [...currentItems, itemName])
+    setCurrentItem('')
   }
 
-  function removeItem(id: string) {
+  function removeItem(index: number) {
     setItems((currentItems) =>
-      currentItems.length === 1
-        ? currentItems
-        : currentItems.filter((item) => item.id !== id),
+      currentItems.filter((_, itemIndex) => itemIndex !== index),
     )
   }
 
@@ -103,33 +96,57 @@ export function CreateTodoListForm({
               Items
             </Typography>
 
-            {items.map((item, index) => (
-              <Box className="todo-form__item-row" key={item.id}>
-                <TextField
-                  fullWidth
-                  label={`Item ${index + 1}`}
-                  onChange={(event) => updateItem(item.id, event.target.value)}
-                  value={item.name}
-                />
-                <IconButton
-                  aria-label={`Remove item ${index + 1}`}
-                  color="secondary"
-                  disabled={items.length === 1}
-                  onClick={() => removeItem(item.id)}
-                >
-                  Remove
-                </IconButton>
-              </Box>
-            ))}
+            <Box className="todo-form__item-row">
+              <TextField
+                fullWidth
+                label="New item"
+                onChange={(event) => setCurrentItem(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
+                    addItem()
+                  }
+                }}
+                value={currentItem}
+              />
+              <Button
+                className="todo-form__add-button"
+                onClick={addItem}
+                type="button"
+                variant="outlined"
+              >
+                Add item
+              </Button>
+            </Box>
 
-            <Button
-              className="todo-form__add-button"
-              onClick={() => setItems((currentItems) => [...currentItems, buildDraftItem()])}
-              type="button"
-              variant="outlined"
-            >
-              Add item
-            </Button>
+            {items.length > 0 ? (
+              <TableContainer component={Paper} elevation={0}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nombre</TableCell>
+                      <TableCell align="right">Acción</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {items.map((item, index) => (
+                      <TableRow key={`${item}-${index}`}>
+                        <TableCell>{item}</TableCell>
+                        <TableCell align="right">
+                          <Button
+                            color="secondary"
+                            onClick={() => removeItem(index)}
+                            size="small"
+                          >
+                            Remove
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : null}
           </Stack>
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
