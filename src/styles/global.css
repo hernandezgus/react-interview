@@ -1,0 +1,185 @@
+:root {
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  color: #0f172a;
+  background:
+    radial-gradient(circle at top, rgba(45, 212, 191, 0.22), transparent 32%),
+    linear-gradient(180deg, #eff6ff 0%, #f8fafc 60%, #fff7ed 100%);
+  font-synthesis: none;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+}
+
+.login-page {
+  align-items: center;
+  display: flex !important;
+  min-height: 100vh;
+}
+
+.login-page__card {
+  width: 100%;
+}
+
+.login-page__content {
+  padding: 12px 8px;
+}
+
+.todo-page {
+  padding-bottom: 48px;
+  padding-top: 40px;
+}
+
+.todo-page__layout {
+  width: 100%;
+}
+
+.todo-page__hero {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.todo-page__section-header {
+  display: grid;
+  gap: 4px;
+}
+
+.todo-page__content {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+}
+
+.todo-page__loading {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.todo-page__token {
+  color: #0f766e;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.todo-form__content {
+  width: 100%;
+}
+
+.todo-form__label {
+  color: #334155;
+}
+
+.todo-form__item-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.todo-form__add-button {
+  align-self: flex-start;
+}
+
+.todo-card__item {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.todo-card__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.todo-card__title-block {
+  min-width: 0;
+}
+
+.todo-card__header-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.todo-card__list-edit-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.todo-card__add-item-form {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.todo-card__add-item-input {
+  flex: 1;
+}
+
+.todo-card__item-input {
+  flex: 1;
+}
+
+.todo-card__item-name {
+  flex: 1;
+}
+
+.todo-card__item-name--completed {
+  color: #64748b;
+  text-decoration: line-through;
+}
+
+.todo-card__item-actions {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+@media (max-width: 900px) {
+  .todo-page__hero {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .todo-page__content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .todo-card__header,
+  .todo-card__add-item-form,
+  .todo-card__item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .todo-card__header-actions,
+  .todo-card__item-actions {
+    justify-content: flex-start;
+  }
+}
