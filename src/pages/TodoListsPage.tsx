@@ -41,7 +41,9 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncResult, setSyncResult] = useState<{
     success: boolean
-    created: number
+    createdLocal: number
+    createdExternal: number
+    updatedExternal: number
     failed: number
     message?: string
   } | null>(null)
@@ -178,7 +180,7 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
               severity={syncResult?.success ? 'success' : 'warning'}
               onClose={handleCloseSnackbar}
             >
-              Sync completed: {syncResult?.created ?? 0} created, {syncResult?.failed ?? 0} failed
+              Sync completed: {syncResult?.createdLocal ?? 0} local created, {syncResult?.createdExternal ?? 0} external created, {syncResult?.updatedExternal ?? 0} external updated, {syncResult?.failed ?? 0} failed
             </Alert>
           )}
         </Snackbar>
