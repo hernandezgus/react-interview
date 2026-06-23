@@ -36,6 +36,7 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
     submitTodoList,
     toggleTodoItemCompleted,
     todoLists,
+    completeAllItems,
   } = useTodoLists()
 
   const [isSyncing, setIsSyncing] = useState(false)
@@ -155,6 +156,7 @@ export function TodoListsPage({ onLogout, token }: TodoListsPageProps) {
                           })),
                         })
                       }
+                      onCompleteAll={completeAllItems}
                       todoList={todoList}
                     />
                   ))}
