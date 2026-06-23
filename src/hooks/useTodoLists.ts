@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AxiosError } from 'axios'
 import {
+  completeTodoList,
   createTodoList,
   deleteTodoItem,
   deleteTodoList,
@@ -69,16 +70,17 @@ export function useTodoLists() {
     }
   }
 
-  async function mutateList(
+  async function mutateList<T>(
     todoListId: number,
-    mutation: () => Promise<unknown>,
+    mutation: () => Promise<T>,
   ) {
     setActiveListId(todoListId)
     setActionErrorMessage('')
 
     try {
-      await mutation()
+      const result = await mutation()
       await loadTodoLists()
+      return result
     } catch (error) {
       setActionErrorMessage(getApiErrorMessage(error))
       throw error
@@ -135,6 +137,10 @@ export function useTodoLists() {
     await mutateList(todoList.id, () => deleteTodoItem(todoList, itemId))
   }
 
+  async function completeAllItems(todoList: TodoList) {
+    return mutateList(todoList.id, () => completeTodoList(todoList.id))
+  }
+
   useEffect(() => {
     void loadTodoLists()
   }, [])
@@ -154,6 +160,7 @@ export function useTodoLists() {
     saveTodoList,
     submitTodoList,
     toggleTodoItemCompleted,
+    completeAllItems,
     todoLists,
   }
 }

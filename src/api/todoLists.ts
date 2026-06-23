@@ -37,6 +37,15 @@ export async function syncTodos() {
   return response.data
 }
 
+export async function completeTodoList(id: number) {
+  const response = await apiClient.post<{
+    success: boolean
+    totalUpdated: number
+    failedRetries: number
+  }>(`/api/todolists/${id}/complete-all`)
+  return response.data
+}
+
 export async function updateTodoItem(
   todoList: TodoList,
   itemId: number,
