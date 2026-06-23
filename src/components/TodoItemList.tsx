@@ -10,6 +10,9 @@ import {
 import type { TodoItem, TodoList } from '../features/todolists/types'
 import { List, type RowComponentProps } from 'react-window'
 
+// This component uses react-window virtualization to render only visible TodoItems
+// from very large lists, keeping performance stable even with 100,000+ rows.
+
 type TodoItemListProps = {
   isWorking: boolean
   onDeleteItem: (todoList: TodoList, itemId: number) => Promise<void>
